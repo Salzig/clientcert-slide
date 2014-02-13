@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="description" content="Presentation about TideSDK to create Desktop Application. It self uses TideSDK and reveal.js">
+    <meta name="author" content="Ben Rexin">
+
+    <title>TideSDK – Presentation</title>
+
+    <base href="./">
+
+    <meta name="viewport" content="width=device-width">
+
+    <link rel="stylesheet" href="stylesheet/reveal.css" />
+
+    <!-- <link rel="stylesheet" href="stylesheet/theme/default.css" /> -->
+    <!-- <link rel="stylesheet" href="stylesheet/theme/moon.css" /> -->
+    <!-- <link rel="stylesheet" href="stylesheet/theme/sky.css" /> -->
+    <link rel="stylesheet" href="stylesheet/theme/solarized.css" />
+    <!-- <link rel="stylesheet" href="stylesheet/theme/night.css" /> -->
+    <!-- <link rel="stylesheet" href="stylesheet/theme/beige.css" /> -->
+
+    <link rel="stylesheet" href="stylesheet/print/paper.css" media="print" />
+    <link rel="stylesheet" href="stylesheet/print/pdf.css" media="print" />
+
+    <!-- <link rel="stylesheet" href="stylesheet/rainbow/all-hallows-eve.css" /> -->
+    <!-- <link rel="stylesheet" href="stylesheet/rainbow/blackboard.css" /> -->
+    <!-- <link rel="stylesheet" href="stylesheet/rainbow/dreamweaver.css" /> -->
+    <link rel="stylesheet" href="stylesheet/rainbow/espresso-libre.css" />
+    <!-- <link rel="stylesheet" href="stylesheet/rainbow/github.css" /> -->
+    <!-- <link rel="stylesheet" href="stylesheet/rainbow/obsidian.css" /> -->
+    <!-- <link rel="stylesheet" href="stylesheet/rainbow/pastie.css" /> -->
+    <!-- <link rel="stylesheet" href="stylesheet/rainbow/solarized-dark.css" /> -->
+    <!-- <link rel="stylesheet" href="stylesheet/rainbow/solarized-light.css" /> -->
+    <!-- <link rel="stylesheet" href="stylesheet/rainbow/sunburst.css" /> -->
+    <!-- <link rel="stylesheet" href="stylesheet/rainbow/tomorrow-night.css" /> -->
+    <!-- <link rel="stylesheet" href="stylesheet/rainbow/tricolore.css" /> -->
+    <!-- <link rel="stylesheet" href="stylesheet/rainbow/twilight.css" /> -->
+    <!-- <link rel="stylesheet" href="stylesheet/rainbow/zenburnesque.css" /> -->
+
+    <link rel="stylesheet" href="stylesheet/custom/base.css" />
+    <link rel="stylesheet" href="stylesheet/custom/screen.css" />
+  </head>
+  <body>
+    <section class="reveal">
+      <section class="slides">
+        <section data-transition="zoom">
+          <h1>Client Side Certificates</h1>
+        </section>
+
+        <section data-transition="linear" data-state="alert">
+          <h2>Don't trust me!</h2>
+        </section>
+
+        <section data-transition="linear">
+          <section>
+            <h2>Why?</h2>
+          </section>
+        </section>
+
+        <section data-transition="linear">
+          <section>
+            <h2>CACert</h2>
+            <h3>The Web of Trust We Trust</h3>
+          </section>
+
+          <section>
+            <h2>CACert?</h2>
+            <ul>
+              <li>Community-Driven Certificate Authority</li>
+              <li>Non-Profit</li>
+              <li>24. July 2003</li>
+              <li>267369 Nutzer</li>
+              <li>5850 Assurer</li>
+            </ul>
+          </section>
+        </section><!-- CACert -->
+
+        <section data-transition="linear">
+          <section>
+            <h2>Client Side Certificates</h2>
+            <h3>nginx, Rails</h3>
+          </section>
+
+          <section>
+            <h2>server config</h2>
+            <pre><code data-language="javascript">
+server {
+  # …
+  # CA = certificate authority
+  ssl_client_certificate path/certificate_authority.crt;
+  # ssl_verify_client [on, off, optional, optional_no_ca]
+  ssl_verify_client optional;
+  # …
+}
+            </code></pre>
+          </section>
+
+          <section>
+            <h2>proxy config</h2>
+            <pre><code data-language="javascript">
+# serial number
+proxy_set_header SSL-client-serial $ssl_client_serial;
+# subject distinguished name
+proxy_set_header SSL-client-dn $ssl_client_s_dn;
+# “SUCCESS”, “FAILED”, or “NONE” if a certificate was not present;
+proxy_set_header SSL-client-verify $ssl_client_verify;
+            </code></pre>
+          </section>
+
+          <section>
+            <h2>…demo…</h2>
+          </section>
+        </section><!-- Implementation -->
+
+        <section data-transition="linear">
+          <section>
+            <h2>I'm-Awesome-CA</h2>
+            <h3>…in progress…</h3>s
+          </section>
+
+          <section>
+            <h2>certificate authority</h2>
+            <pre><code data-language="shell">
+# generate authority
+openssl genrsa -out certificate_authority.key 4096
+openssl req -new -x509 -days 365 -key certificate_authority.key -out certificate_authority.crt
+            </code></pre>
+          </section>
+
+          <section>
+            <h2>self signed server crt</h2>
+            <pre><code data-language="shell">
+# generate server
+openssl genrsa -out server.key 1024
+openssl req -new -key server.key -out server.csr -subj '/CN=localhost'
+openssl x509 -req -days 365 -in server.csr -CA certificate_authority.crt -CAkey certificate_authority.key -set_serial 01 -out server.crt
+            </code></pre>
+          </section>
+
+          <section>
+            <h2>and client?</h2>
+          </section>
+
+          <section>
+            <h2>…demo…</h2>
+          </section>
+        </section><!-- I'mAwesomeCA -->
+
+        <section>
+          <section data-transition="linear" data-state="soothe">
+            <h2>Q&amp;A</h2>
+          </section>
+
+          <section data-state="finished">
+            <h1>Thanks</h1>
+            <p><a href="http://ben.rexin.at/clientcert-presentation">ben.rexin.at/clientcert-presentation</a></p>
+          </section>
+
+          <section>
+            <h2>Quellen/Lesenswertes</h2>
+            <ul>
+              <li><a href="http://www.cacert.org/stats.php">CACert Statistik</a></li>
+              <li><a href="http://wiki.cacert.org/">CACert Wiki</a></li>
+              <li><a href="http://nginx.org/en/docs/http/ngx_http_ssl_module.html#variables">nginx ssl module variables</a></li>
+              <li><a href="http://wiki.cacert.org/ApacheServerClientCertificateAuthentication">CACert Apache Server Client Certificate Authentication</a></li>
+            </ul>
+          </section>
+        </section><!-- endcard -->
+      </section>
+    </section>
+    <script src="javascript/html5shiv.js"></script>
+    <script src="javascript/classList.js"></script>
+    <script src="javascript/reveal.js"></script>
+    <script src="javascript/rainbow.js"></script>
+    <script src="javascript/language/generic.js"></script>
+    <script src="javascript/language/python.js"></script>
+    <script src="javascript/language/php.js"></script>
+    <script src="javascript/language/ruby.js"></script>
+    <script src="javascript/init.js"></script>
+  </body>
+</html>
+
+

@@ -1,0 +1,12 @@
+a.no-roll {
+  color: #e7ad52;
+  text-decoration: none;
+}
+.reveal .progress {
+  top: 0;
+  height: 8px;
+}
+code {
+  word-wrap: break-word !important; /* or "normal" */
+  overflow-wrap: break-word;
+}
